@@ -1,8 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Adventure Saathi | Explore Beyond Limits</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -257,9 +260,6 @@ color:#aaa;
 
 </div>
 
-
-<!-- HERO -->
-
 <section class="hero">
 
 <div class="container hero-content">
@@ -275,9 +275,6 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 </div>
 
 </section>
-
-
-<!-- STATS -->
 
 <section class="stats">
 
@@ -298,9 +295,6 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 
 </section>
 
-
-<!-- TREKS -->
-
 <section id="treks">
 
 <div class="container">
@@ -309,41 +303,11 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 <h2>Featured Treks</h2>
 </div>
 
-<div class="cards">
-
-<div class="card">
-<h3>Chopta Tungnath Trek</h3>
-<p>Mini Switzerland of India with the highest Shiva temple trek.</p>
-</div>
-
-<div class="card">
-<h3>Kedarkantha Trek</h3>
-<p>One of India's most beautiful winter summit treks.</p>
-</div>
-
-<div class="card">
-<h3>Brahmatal Trek</h3>
-<p>Frozen lakes and stunning views of Mt. Trishul & Nanda Ghunti.</p>
-</div>
-
-<div class="card">
-<h3>Sar Pass Trek</h3>
-<p>A thrilling crossover trek through forests and snowfields.</p>
-</div>
-
-<div class="card">
-<h3>Hampta Pass Trek</h3>
-<p>Dramatic crossover from lush Kullu valley to barren Spiti.</p>
-</div>
-
-</div>
+<div class="cards" id="treksContainer"></div>
 
 </div>
 
 </section>
-
-
-<!-- ABOUT -->
 
 <section id="about">
 
@@ -357,8 +321,6 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 
 Adventure Saathi was founded by <b>Shailza</b>, a mountain lover and trekking enthusiast who believes the Himalayas are more than just destinations — they are experiences that transform you.
 
-From the snowy trails of Kedarkantha to the high passes of Himachal, Adventure Saathi is built to bring authentic trekking experiences to explorers who seek adventure beyond ordinary travel.
-
 Our mission is simple — to make the mountains accessible, safe, and unforgettable for every adventurer.
 
 </p>
@@ -366,9 +328,6 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 </div>
 
 </section>
-
-
-<!-- CONTACT -->
 
 <section id="contact">
 
@@ -394,9 +353,6 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 
 </section>
 
-
-<!-- CTA -->
-
 <section class="cta">
 
 <h2>Ready For Your Next Adventure?</h2>
@@ -404,9 +360,6 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 <button class="btn-primary" onclick="openModal()">Book Your Trek</button>
 
 </section>
-
-
-<!-- FOOTER -->
 
 <footer>
 
@@ -418,12 +371,9 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 
 <p>📸 Instagram: @adventuresaathi</p>
 
-<p>© 2026 Adventure Saathi. All Rights Reserved.</p>
+<p>© 2026 Adventure Saathi</p>
 
 </footer>
-
-
-<!-- BOOKING MODAL -->
 
 <div id="bookingModal" class="modal">
 
@@ -460,55 +410,80 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 
 </div>
 
-
-<!-- WHATSAPP BUTTON -->
-
-<a href="https://wa.me/918808970991?text=Hi%20Adventure%20Saathi%2C%20I%20want%20to%20know%20about%20your%20treks"
-class="whatsapp-float"
-target="_blank">
+<a href="https://wa.me/918808970991" class="whatsapp-float" target="_blank">
 
 <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
 
 </a>
 
-
 <script>
 
-const LEADS_API = "https://script.google.com/macros/s/AKfycbwaAAPsyGDx60r8MvcQ_kzQnFa-VwXcpNnOaDXfLt3oLv6vje9vzFgLc7lGcQyWwPuP/exec";
+const TREKS_API="https://script.google.com/macros/s/AKfycbxGiwbYnBc0cSNzMKq0IG3uFioOUF5vw2J5St-WiTW8B4e5wfqFR8w8M1DbLBx-JLauXA/exec";
+const LEADS_API="https://script.google.com/macros/s/AKfycbwaAAPsyGDx60r8MvcQ_kzQnFa-VwXcpNnOaDXfLt3oLv6vje9vzFgLc7lGcQyWwPuP/exec";
 
+function loadTreks(){
 
-document.getElementById("bookingForm").addEventListener("submit", function(e){
+fetch(TREKS_API)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const container=document.getElementById("treksContainer");
+
+container.innerHTML="";
+
+data.forEach(trek=>{
+
+if(trek.status!=="active") return;
+
+const card=document.createElement("div");
+
+card.className="card";
+
+card.innerHTML=`
+
+<h3>${trek.trek_name}</h3>
+<p>${trek.short_desc}</p>
+<p><b>Location:</b> ${trek.location}</p>
+<p><b>Price:</b> ₹${trek.price}</p>
+<p><b>Dates:</b> ${trek.dates}</p>
+
+`;
+
+container.appendChild(card);
+
+});
+
+});
+
+}
+
+loadTreks();
+
+document.getElementById("bookingForm").addEventListener("submit",function(e){
 
 e.preventDefault();
 
-const data = {
+const data={
 
 name:document.getElementById("name").value,
-
 date:document.getElementById("date").value,
-
 destination:document.getElementById("destination").value,
-
 people:document.getElementById("people").value
 
 };
 
 fetch(LEADS_API,{
-
 method:"POST",
-
 body:JSON.stringify(data)
-
 })
 
 .then(res=>res.text())
-
 .then(()=>{
 
 alert("Booking Submitted Successfully 🚀");
-
 closeModal();
-
 document.getElementById("bookingForm").reset();
 
 })
@@ -520,7 +495,6 @@ alert("Something went wrong! Please try again.");
 });
 
 });
-
 
 function openModal(){
 
@@ -550,3 +524,4 @@ modal.style.display="none";
 
 </body>
 </html>
+```
