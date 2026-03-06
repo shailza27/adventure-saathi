@@ -387,8 +387,7 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 
 <input type="text" id="name" placeholder="Full Name" required>
 
-<input type="month" id="date" required>
-
+<input type="text" id="date" placeholder="Month, Year" onfocus="(this.type='month')" onblur="if(!this.value)this.type='text'" required>
 <select id="destination" required>
 
 <option value="">Select Destination</option>
