@@ -1,11 +1,8 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Adventure Saathi | Explore Beyond Limits</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -203,9 +200,9 @@ font-size:24px;
 cursor:pointer;
 }
 
-/* CONTACT FORM */
+/* CONTACT */
 
-form input, form textarea{
+form input,form textarea{
 width:100%;
 padding:12px;
 margin-bottom:15px;
@@ -245,7 +242,6 @@ color:#aaa;
 <div class="container">
 
 <nav>
-
 <div class="logo">Adventure Saathi</div>
 
 <div class="nav-links">
@@ -257,27 +253,21 @@ color:#aaa;
 </div>
 
 </nav>
-
 </div>
 
 <section class="hero">
-
 <div class="container hero-content">
 
 <h1>Discover India's <span class="highlight">Untamed</span> Trails</h1>
 
-<p>
-From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforgettable trekking experiences.
-</p>
+<p>From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforgettable trekking experiences.</p>
 
 <a class="btn-primary" onclick="openModal()">Book Now</a>
 
 </div>
-
 </section>
 
 <section class="stats">
-
 <div class="stat">
 <h2>300+</h2>
 <p>Treks Completed</p>
@@ -292,13 +282,10 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 <h2>100%</h2>
 <p>Safety Commitment</p>
 </div>
-
 </section>
 
 <section id="treks">
-
 <div class="container">
-
 <div class="section-title">
 <h2>Featured Treks</h2>
 </div>
@@ -306,11 +293,9 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 <div class="cards" id="treksContainer"></div>
 
 </div>
-
 </section>
 
 <section id="about">
-
 <div class="container">
 
 <div class="section-title">
@@ -321,54 +306,43 @@ From Himalayan summits to hidden forest paths — Adventure Saathi crafts unforg
 
 Adventure Saathi was founded by <b>Shailza</b>, a mountain lover and trekking enthusiast who believes the Himalayas are more than just destinations — they are experiences that transform you.
 
-Our mission is simple — to make the mountains accessible, safe, and unforgettable for every adventurer.
-
 </p>
 
 </div>
-
 </section>
 
 <section id="contact">
-
 <div class="container">
 
 <div class="section-title">
 <h2>Contact Us</h2>
 </div>
 
-<form>
+<form id="contactForm">
 
-<input type="text" placeholder="Your Name" required>
+<input type="text" id="contactName" placeholder="Your Name" required>
 
-<input type="email" placeholder="Email Address" required>
+<input type="email" id="contactEmail" placeholder="Email Address" required>
 
-<textarea placeholder="Your Message" required></textarea>
+<textarea id="contactMessage" placeholder="Your Message" required></textarea>
 
-<button class="btn-primary">Send Message</button>
+<button type="submit" class="btn-primary">Send Message</button>
 
 </form>
 
 </div>
-
 </section>
 
 <section class="cta">
-
 <h2>Ready For Your Next Adventure?</h2>
-
 <button class="btn-primary" onclick="openModal()">Book Your Trek</button>
-
 </section>
 
 <footer>
 
-<p>📍 Chambaghat, Solan, Himachal Pradesh 173213</p>
-
+<p>📍 Chambaghat, Solan, Himachal Pradesh</p>
 <p>📞 8808970991</p>
-
 <p>📧 info@adventuresaathi.com</p>
-
 <p>📸 Instagram: @adventuresaathi</p>
 
 <p>© 2026 Adventure Saathi</p>
@@ -388,15 +362,9 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 <input type="text" id="name" placeholder="Full Name" required>
 
 <input type="text" id="date" placeholder="Month, Year" onfocus="(this.type='month')" onblur="if(!this.value)this.type='text'" required>
+
 <select id="destination" required>
-
 <option value="">Select Destination</option>
-<option>Chopta Tungnath</option>
-<option>Kedarkantha</option>
-<option>Brahmatal</option>
-<option>Sar Pass</option>
-<option>Hampta Pass</option>
-
 </select>
 
 <input type="number" id="people" placeholder="Number of People" min="1" required>
@@ -406,10 +374,10 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 </form>
 
 </div>
-
 </div>
 
-<a href="https://wa.me/918808970991" class="whatsapp-float" target="_blank">
+<a href="https://wa.me/918808970991?text=Hi%20Adventure%20Saathi%2C%20I%20want%20to%20know%20about%20your%20treks"
+class="whatsapp-float" target="_blank">
 
 <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
 
@@ -418,17 +386,20 @@ Our mission is simple — to make the mountains accessible, safe, and unforgetta
 <script>
 
 const TREKS_API="https://script.google.com/macros/s/AKfycbxGiwbYnBc0cSNzMKq0IG3uFioOUF5vw2J5St-WiTW8B4e5wfqFR8w8M1DbLBx-JLauXA/exec";
-const LEADS_API="https://script.google.com/macros/s/AKfycbwaAAPsyGDx60r8MvcQ_kzQnFa-VwXcpNnOaDXfLt3oLv6vje9vzFgLc7lGcQyWwPuP/exec";
+
+const BOOKING_API="https://script.google.com/macros/s/AKfycbwaAAPsyGDx60r8MvcQ_kzQnFa-VwXcpNnOaDXfLt3oLv6vje9vzFgLc7lGcQyWwPuP/exec";
+
+const CONTACT_API="https://script.google.com/macros/s/AKfycbxkfXPNdjWt17UMiLPt-z-gwJTisZ6JUsRtRXpJqBtbEZYyOgQrFKD8DmykoaIHo6ZNaA/exec";
+
 
 function loadTreks(){
 
 fetch(TREKS_API)
-
 .then(res=>res.json())
-
 .then(data=>{
 
 const container=document.getElementById("treksContainer");
+const dropdown=document.getElementById("destination");
 
 container.innerHTML="";
 
@@ -437,20 +408,21 @@ data.forEach(trek=>{
 if(trek.status!=="active") return;
 
 const card=document.createElement("div");
-
 card.className="card";
 
 card.innerHTML=`
-
 <h3>${trek.trek_name}</h3>
 <p>${trek.short_desc}</p>
 <p><b>Location:</b> ${trek.location}</p>
 <p><b>Price:</b> ₹${trek.price}</p>
 <p><b>Dates:</b> ${trek.dates}</p>
-
 `;
 
 container.appendChild(card);
+
+const option=document.createElement("option");
+option.textContent=trek.trek_name;
+dropdown.appendChild(option);
 
 });
 
@@ -460,67 +432,81 @@ container.appendChild(card);
 
 loadTreks();
 
+
 document.getElementById("bookingForm").addEventListener("submit",function(e){
 
 e.preventDefault();
 
 const data={
-
 name:document.getElementById("name").value,
 date:document.getElementById("date").value,
 destination:document.getElementById("destination").value,
 people:document.getElementById("people").value
-
 };
 
-fetch(LEADS_API,{
+fetch(BOOKING_API,{
 method:"POST",
 body:JSON.stringify(data)
 })
 
 .then(res=>res.text())
 .then(()=>{
-
 alert("Booking Submitted Successfully 🚀");
 closeModal();
 document.getElementById("bookingForm").reset();
-
 })
 
 .catch(()=>{
-
 alert("Something went wrong! Please try again.");
-
 });
 
 });
+
+
+document.getElementById("contactForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+const data={
+name:document.getElementById("contactName").value,
+email:document.getElementById("contactEmail").value,
+msg:document.getElementById("contactMessage").value
+};
+
+fetch(CONTACT_API,{
+method:"POST",
+body:JSON.stringify(data)
+})
+
+.then(res=>res.text())
+.then(()=>{
+alert("Message sent successfully ✅");
+document.getElementById("contactForm").reset();
+})
+
+.catch(()=>{
+alert("Something went wrong.");
+});
+
+});
+
 
 function openModal(){
-
 document.getElementById("bookingModal").style.display="flex";
-
 }
 
 function closeModal(){
-
 document.getElementById("bookingModal").style.display="none";
-
 }
 
 window.onclick=function(event){
-
 const modal=document.getElementById("bookingModal");
-
 if(event.target==modal){
-
 modal.style.display="none";
-
 }
-
 }
 
 </script>
 
 </body>
 </html>
-```
