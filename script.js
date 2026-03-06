@@ -1,4 +1,4 @@
-const API="YOUR_GOOGLE_SCRIPT_URL";
+const API="https://script.google.com/macros/s/AKfycbxGiwbYnBc0cSNzMKq0IG3uFioOUF5vw2J5St-WiTW8B4e5wfqFR8w8M1DbLBx-JLauXA/exec";
 
 async function loadTreks(){
 
