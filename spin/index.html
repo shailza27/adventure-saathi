@@ -10,7 +10,9 @@
 body{
 margin:0;
 font-family:'Inter',sans-serif;
-background:linear-gradient(135deg,#0c0f14,#1a1f2b);
+background:
+radial-gradient(circle at center, rgba(255,122,0,0.2), transparent 60%),
+linear-gradient(135deg,#0c0f14,#1a1f2b);
 color:white;
 display:flex;
 flex-direction:column;
@@ -26,14 +28,13 @@ align-items:center;
 gap:10px;
 font-size:26px;
 font-weight:600;
-letter-spacing:0.5px;
 margin-bottom:10px;
 }
 
 .heading img{
-width:38px;
-height:38px;
-border-radius:10px;
+width:36px;
+height:36px;
+border-radius:8px;
 }
 
 /* WHEEL */
@@ -49,9 +50,14 @@ max-height:420px;
 width:100%;
 height:100%;
 border-radius:50%;
-border:10px solid #ff7a00;
-box-shadow:0 0 25px rgba(255,122,0,0.4);
-transition: transform 4s ease-out;
+border:12px solid #ff7a00;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,0.7),
+inset 0 6px 12px rgba(255,255,255,0.15),
+inset 0 -10px 20px rgba(0,0,0,0.6);
+
+transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 #wheel.dimmed{
@@ -69,14 +75,26 @@ position:absolute;
 top:-15px;
 left:50%;
 transform:translateX(-50%);
-filter:drop-shadow(0 0 8px #ff7a00);
+filter:drop-shadow(0 4px 6px rgba(0,0,0,0.6))
+       drop-shadow(0 0 8px rgba(255,122,0,0.6));
+}
+
+/* Pointer animations */
+#pointer.tick{
+animation: tick 0.15s linear infinite;
 }
 
 #pointer.bounce{
-animation:pointerBounce 0.5s ease;
+animation: bounce 0.5s ease;
 }
 
-@keyframes pointerBounce{
+@keyframes tick{
+0%{transform:translateX(-50%) rotate(0deg);}
+50%{transform:translateX(-50%) rotate(-12deg);}
+100%{transform:translateX(-50%) rotate(0deg);}
+}
+
+@keyframes bounce{
 0%{transform:translateX(-50%) rotate(0deg);}
 50%{transform:translateX(-50%) rotate(-15deg);}
 100%{transform:translateX(-50%) rotate(0deg);}
@@ -92,6 +110,7 @@ width:120px;
 height:120px;
 border-radius:50%;
 overflow:hidden;
+box-shadow:0 0 20px rgba(255,122,0,0.5);
 }
 
 #center-img img{
@@ -192,13 +211,11 @@ opacity:0;
 
 <body>
 
-<!-- HEADING -->
 <div class="heading">
 <img src="logo.png">
-<span>Adventure Saathi Spin & Win</span>
+<span>Spin & Win</span>
 </div>
 
-<!-- WHEEL -->
 <div id="wheel-container">
 <div id="pointer"></div>
 <canvas id="wheel" width="400" height="400"></canvas>
@@ -232,6 +249,7 @@ onclick="window.open('https://instagram.com/adventuresaathi')">
 <button id="waBtn" class="action-btn whatsapp">
 📲 Claim on WhatsApp
 </button>
+
 </div>
 
 </div>
@@ -243,10 +261,10 @@ const options=["₹100","₹200","₹300","₹400","Better Luck"];
 
 const colors=[
 "#ff7a00",
-"#ffb347",
-"#d2691e",
-"#8b5e3c",
-"#2e2e2e"
+"#ff3d00",
+"#ffb300",
+"#ff6f61",
+"#444"
 ];
 
 const canvas=document.getElementById("wheel");
@@ -262,11 +280,25 @@ for(let i=0;i<options.length;i++){
 
 ctx.beginPath();
 
-ctx.fillStyle=(i===highlightIndex && flash)?"#ffd700":colors[i];
+let gradient = ctx.createRadialGradient(200,200,60,200,200,200);
+
+if(i===highlightIndex && flash){
+gradient.addColorStop(0,"#fff4b0");
+gradient.addColorStop(1,"#ffd700");
+}else{
+gradient.addColorStop(0,colors[i]);
+gradient.addColorStop(1,"#000");
+}
+
+ctx.fillStyle = gradient;
 
 ctx.moveTo(200,200);
 ctx.arc(200,200,200,arc*i,arc*(i+1));
 ctx.fill();
+
+ctx.strokeStyle="rgba(255,255,255,0.1)";
+ctx.lineWidth=2;
+ctx.stroke();
 
 ctx.save();
 ctx.translate(200,200);
@@ -333,6 +365,9 @@ return;
 if(spinning) return;
 spinning=true;
 
+const pointer=document.getElementById("pointer");
+pointer.classList.add("tick");
+
 const weighted=[
 "₹100","₹100",
 "₹200","₹200",
@@ -354,11 +389,11 @@ document.getElementById("wheel").style.transform=`rotate(${rotation}deg)`;
 
 setTimeout(()=>{
 
-document.getElementById("wheel").classList.add("dimmed");
-
-const pointer=document.getElementById("pointer");
+pointer.classList.remove("tick");
 pointer.classList.add("bounce");
 setTimeout(()=>pointer.classList.remove("bounce"),500);
+
+document.getElementById("wheel").classList.add("dimmed");
 
 flashWinningSegment(index);
 
