@@ -19,6 +19,21 @@ align-items:center;
 height:100vh;
 }
 
+/* HEADING */
+.heading{
+display:flex;
+align-items:center;
+gap:10px;
+font-size:28px;
+margin-bottom:10px;
+}
+
+.heading img{
+width:34px;
+height:34px;
+border-radius:8px;
+}
+
 /* WHEEL */
 #wheel-container{
 position:relative;
@@ -55,14 +70,24 @@ transform:translateX(-50%);
 filter:drop-shadow(0 0 8px #ff7a00);
 }
 
+#pointer.bounce{
+animation:pointerBounce 0.5s ease;
+}
+
+@keyframes pointerBounce{
+0%{transform:translateX(-50%) rotate(0deg);}
+50%{transform:translateX(-50%) rotate(-15deg);}
+100%{transform:translateX(-50%) rotate(0deg);}
+}
+
 /* CENTER IMAGE */
 #center-img{
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-width:90px;
-height:90px;
+width:100px;
+height:100px;
 border-radius:50%;
 overflow:hidden;
 border:4px solid #fff;
@@ -78,14 +103,14 @@ object-fit:cover;
 button{
 padding:14px 24px;
 margin-top:20px;
-background:linear-gradient(45deg,#ff7a00,#ffb347);
+background:linear-gradient(135deg,#ff7a00,#ff9f43);
 border:none;
 color:white;
 font-size:16px;
 border-radius:30px;
 cursor:pointer;
 font-weight:600;
-box-shadow:0 4px 15px rgba(255,122,0,0.4);
+box-shadow:0 6px 20px rgba(255,122,0,0.3);
 }
 
 /* POPUP */
@@ -107,11 +132,11 @@ padding:30px;
 border-radius:15px;
 text-align:center;
 width:85%;
-max-width:350px;
+max-width:360px;
 }
 
 .popup-content h2{
-font-size:32px;
+font-size:28px;
 color:#ff7a00;
 }
 
@@ -122,7 +147,7 @@ font-weight:bold;
 margin:10px 0;
 }
 
-/* BUTTONS */
+/* ACTION BUTTONS */
 .action-btn{
 display:block;
 width:100%;
@@ -134,8 +159,15 @@ font-size:15px;
 cursor:pointer;
 }
 
-.insta{background:#E1306C;color:white;}
-.whatsapp{background:#25D366;color:white;}
+.insta{
+background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);
+color:white;
+}
+
+.whatsapp{
+background:linear-gradient(135deg,#25D366,#128C7E);
+color:white;
+}
 
 /* CONFETTI */
 .confetti{
@@ -144,7 +176,6 @@ width:8px;
 height:8px;
 top:50%;
 left:50%;
-opacity:1;
 animation:burst 1s ease-out forwards;
 }
 
@@ -160,14 +191,19 @@ opacity:0;
 
 <body>
 
-<h2>🎡 Spin & Win</h2>
+<!-- HEADING WITH LOGO -->
+<div class="heading">
+<img src="logo2.png">
+<span>Spin & Win</span>
+</div>
 
 <div id="wheel-container">
 <div id="pointer"></div>
 <canvas id="wheel" width="400" height="400"></canvas>
 
+<!-- CENTER IMAGE -->
 <div id="center-img">
-<img src="logo2.png">
+<img src="ghumakkad.png">
 </div>
 </div>
 
@@ -178,32 +214,40 @@ opacity:0;
 <div class="popup-content">
 
 <h2 id="resultText"></h2>
+
+<p style="opacity:0.7;">Your Coupon Code</p>
 <p class="coupon" id="couponCode"></p>
 
+<div style="text-align:left;margin-top:15px;">
+<p style="font-weight:600;">📌 Steps to Claim:</p>
+
+<p>1. Follow us on Instagram</p>
 <button class="action-btn insta"
 onclick="window.open('https://instagram.com/adventuresaathi')">
 📸 Follow on Instagram
 </button>
 
+<p style="margin-top:10px;">2. Share screenshot & claim on WhatsApp</p>
 <button id="waBtn" class="action-btn whatsapp">
 📲 Claim on WhatsApp
 </button>
+
+</div>
 
 </div>
 </div>
 
 <script>
 
-const options = ["₹100","₹200","₹300","₹400","Better Luck"];
-const colors = ["#ff7a00","#ff9933","#ffb347","#ff5722","#444"];
+const options=["₹100","₹200","₹300","₹400","Better Luck"];
+const colors=["#ff7a00","#ff9933","#ffb347","#ff5722","#444"];
 
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
 
-const arc = (2 * Math.PI) / options.length;
+const arc=(2*Math.PI)/options.length;
 
-/* DRAW WHEEL */
-function drawWheel(highlightIndex=-1, flash=false){
+function drawWheel(highlightIndex=-1,flash=false){
 
 ctx.clearRect(0,0,400,400);
 
@@ -211,11 +255,7 @@ for(let i=0;i<options.length;i++){
 
 ctx.beginPath();
 
-if(i===highlightIndex && flash){
-ctx.fillStyle="#00e676";
-}else{
-ctx.fillStyle=colors[i];
-}
+ctx.fillStyle=(i===highlightIndex && flash)?"#00e676":colors[i];
 
 ctx.moveTo(200,200);
 ctx.arc(200,200,200,arc*i,arc*(i+1));
@@ -223,7 +263,7 @@ ctx.fill();
 
 ctx.save();
 ctx.translate(200,200);
-ctx.rotate(arc*i + arc/2);
+ctx.rotate(arc*i+arc/2);
 
 ctx.fillStyle="white";
 ctx.font="bold 16px Arial";
@@ -238,7 +278,6 @@ drawWheel();
 let spinning=false;
 let rotation=0;
 
-/* COUPON */
 function generateCode(amount){
 const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 let r="";
@@ -248,26 +287,23 @@ r+=chars[Math.floor(Math.random()*chars.length)];
 return "AS"+amount.replace("₹","")+"-"+r;
 }
 
-/* BURST CONFETTI */
 function burst(){
 for(let i=0;i<60;i++){
-const div=document.createElement("div");
-div.className="confetti";
-div.style.background=`hsl(${Math.random()*360},100%,50%)`;
+const d=document.createElement("div");
+d.className="confetti";
+d.style.background=`hsl(${Math.random()*360},100%,50%)`;
 
 const x=(Math.random()-0.5)*600+"px";
 const y=(Math.random()-0.5)*600+"px";
 
-div.style.setProperty('--x',x);
-div.style.setProperty('--y',y);
+d.style.setProperty('--x',x);
+d.style.setProperty('--y',y);
 
-document.body.appendChild(div);
-
-setTimeout(()=>div.remove(),1000);
+document.body.appendChild(d);
+setTimeout(()=>d.remove(),1000);
 }
 }
 
-/* FLASH WINNER */
 function flashWinningSegment(index){
 let count=0;
 const interval=setInterval(()=>{
@@ -280,7 +316,6 @@ drawWheel(index,true);
 },300);
 }
 
-/* SPIN */
 function spin(){
 
 if(localStorage.getItem("coupon")){
@@ -315,6 +350,11 @@ setTimeout(()=>{
 
 document.getElementById("wheel").classList.add("dimmed");
 
+// arrow bounce
+const pointer=document.getElementById("pointer");
+pointer.classList.add("bounce");
+setTimeout(()=>pointer.classList.remove("bounce"),500);
+
 flashWinningSegment(index);
 
 let coupon="";
@@ -324,15 +364,14 @@ localStorage.setItem("coupon",coupon);
 burst();
 }
 
-document.getElementById("resultText").innerText=result;
+document.getElementById("resultText").innerText=
+result.includes("₹") ? "🎉 You Won "+result : "😔 Better Luck Next Time";
+
 document.getElementById("couponCode").innerText=coupon;
 
 document.getElementById("popup").style.display="flex";
 
-// WhatsApp
-const msg=encodeURIComponent(
-`Hi! I won ${result} 🎡 Coupon: ${coupon}`
-);
+const msg=encodeURIComponent(`Hi! I won ${result} 🎡 Coupon: ${coupon}`);
 
 document.getElementById("waBtn").onclick=()=>{
 window.open(`https://wa.me/918808970991?text=${msg}`);
