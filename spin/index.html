@@ -10,22 +10,51 @@ font-family:Arial;
 background:#0c0f14;
 color:white;
 text-align:center;
-padding-top:100px;
+padding-top:50px;
 }
 
+h1{color:#ff7a00;}
+
+#wheel{
+margin:40px auto;
+width:300px;
+height:300px;
+border-radius:50%;
+border:8px solid #ff7a00;
+position:relative;
+overflow:hidden;
+transition: transform 4s ease-out;
+}
+
+.segment{
+position:absolute;
+width:50%;
+height:50%;
+background:#151a22;
+transform-origin:100% 100%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+}
+
+.segment:nth-child(1){transform:rotate(0deg) skewY(-60deg);}
+.segment:nth-child(2){transform:rotate(120deg) skewY(-60deg);}
+.segment:nth-child(3){transform:rotate(240deg) skewY(-60deg);}
+
 button{
-padding:15px 25px;
+padding:12px 20px;
 background:#ff7a00;
 border:none;
 color:white;
-font-size:18px;
-cursor:pointer;
+font-size:16px;
 border-radius:6px;
+cursor:pointer;
 }
 
-#wheelResult{
-margin-top:30px;
-font-size:24px;
+#result{
+margin-top:20px;
+font-size:20px;
 color:#ff7a00;
 }
 </style>
@@ -34,32 +63,53 @@ color:#ff7a00;
 <body>
 
 <h1>🎡 Spin & Win</h1>
-<p>Win ₹100 / ₹200 / ₹300 OFF on your Kedarnath trip</p>
+<p>Win ₹100 / ₹200 / ₹300 OFF</p>
 
-<button onclick="spinWheel()">Spin Now</button>
+<div id="wheel">
+<div class="segment">₹100</div>
+<div class="segment">₹200</div>
+<div class="segment">₹300</div>
+</div>
 
-<div id="wheelResult"></div>
+<button onclick="spin()">Spin Now</button>
+
+<div id="result"></div>
 
 <script>
 
-function spinWheel(){
+let spinning = false;
 
-const rewards = [100, 200, 300];
+function spin(){
+if(spinning) return;
 
-// control probability (more 100s, less 300s)
-const weighted = [100,100,100,200,200,300];
+spinning = true;
 
-const result = weighted[Math.floor(Math.random()*weighted.length)];
+const wheel = document.getElementById("wheel");
 
-document.getElementById("wheelResult").innerHTML =
-`🎉 You won ₹${result} OFF!
+// weighted probability
+const outcomes = [100,100,100,200,200,300];
+const result = outcomes[Math.floor(Math.random()*outcomes.length)];
+
+let rotation = 360 * 5; // spins
+
+if(result === 100) rotation += 60;
+if(result === 200) rotation += 180;
+if(result === 300) rotation += 300;
+
+wheel.style.transform = `rotate(${rotation}deg)`;
+
+setTimeout(()=>{
+document.getElementById("result").innerHTML = `
+🎉 You won ₹${result} OFF!
 
 <br><br>
 👉 To claim:
-<br>1. Follow @adventuresaathi on Instagram
-<br>2. Share screenshot on WhatsApp
+<br>1. Follow @adventuresaathi
+<br>2. Share screenshot
 <br>3. Get your voucher
 `;
+spinning = false;
+}, 4000);
 
 }
 
