@@ -24,14 +24,16 @@ height:100vh;
 display:flex;
 align-items:center;
 gap:10px;
-font-size:28px;
+font-size:26px;
+font-weight:600;
+letter-spacing:0.5px;
 margin-bottom:10px;
 }
 
 .heading img{
-width:34px;
-height:34px;
-border-radius:8px;
+width:38px;
+height:38px;
+border-radius:10px;
 }
 
 /* WHEEL */
@@ -48,7 +50,7 @@ width:100%;
 height:100%;
 border-radius:50%;
 border:10px solid #ff7a00;
-box-shadow:0 0 25px rgba(255,122,0,0.5);
+box-shadow:0 0 25px rgba(255,122,0,0.4);
 transition: transform 4s ease-out;
 }
 
@@ -86,11 +88,10 @@ position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-width:100px;
-height:100px;
+width:120px;
+height:120px;
 border-radius:50%;
 overflow:hidden;
-border:4px solid #fff;
 }
 
 #center-img img{
@@ -142,7 +143,7 @@ color:#ff7a00;
 
 .coupon{
 font-size:22px;
-color:#00e676;
+color:#ffd700;
 font-weight:bold;
 margin:10px 0;
 }
@@ -191,17 +192,17 @@ opacity:0;
 
 <body>
 
-<!-- HEADING WITH LOGO -->
+<!-- HEADING -->
 <div class="heading">
 <img src="logo2.png">
-<span>Spin & Win</span>
+<span>Adventure Saathi Spin & Win</span>
 </div>
 
+<!-- WHEEL -->
 <div id="wheel-container">
 <div id="pointer"></div>
 <canvas id="wheel" width="400" height="400"></canvas>
 
-<!-- CENTER IMAGE -->
 <div id="center-img">
 <img src="ghumakkad.png">
 </div>
@@ -231,7 +232,6 @@ onclick="window.open('https://instagram.com/adventuresaathi')">
 <button id="waBtn" class="action-btn whatsapp">
 📲 Claim on WhatsApp
 </button>
-
 </div>
 
 </div>
@@ -240,7 +240,14 @@ onclick="window.open('https://instagram.com/adventuresaathi')">
 <script>
 
 const options=["₹100","₹200","₹300","₹400","Better Luck"];
-const colors=["#ff7a00","#ff9933","#ffb347","#ff5722","#444"];
+
+const colors=[
+"#ff7a00",
+"#ffb347",
+"#d2691e",
+"#8b5e3c",
+"#2e2e2e"
+];
 
 const canvas=document.getElementById("wheel");
 const ctx=canvas.getContext("2d");
@@ -255,7 +262,7 @@ for(let i=0;i<options.length;i++){
 
 ctx.beginPath();
 
-ctx.fillStyle=(i===highlightIndex && flash)?"#00e676":colors[i];
+ctx.fillStyle=(i===highlightIndex && flash)?"#ffd700":colors[i];
 
 ctx.moveTo(200,200);
 ctx.arc(200,200,200,arc*i,arc*(i+1));
@@ -291,11 +298,11 @@ function burst(){
 for(let i=0;i<60;i++){
 const d=document.createElement("div");
 d.className="confetti";
-d.style.background=`hsl(${Math.random()*360},100%,50%)`;
 
 const x=(Math.random()-0.5)*600+"px";
 const y=(Math.random()-0.5)*600+"px";
 
+d.style.background=`hsl(${Math.random()*360},100%,50%)`;
 d.style.setProperty('--x',x);
 d.style.setProperty('--y',y);
 
@@ -343,14 +350,12 @@ const spinDeg=(360*5)+(360-targetAngle);
 
 rotation+=spinDeg;
 
-document.getElementById("wheel").style.transform=
-`rotate(${rotation}deg)`;
+document.getElementById("wheel").style.transform=`rotate(${rotation}deg)`;
 
 setTimeout(()=>{
 
 document.getElementById("wheel").classList.add("dimmed");
 
-// arrow bounce
 const pointer=document.getElementById("pointer");
 pointer.classList.add("bounce");
 setTimeout(()=>pointer.classList.remove("bounce"),500);
