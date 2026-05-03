@@ -6,42 +6,56 @@
 
 <style>
 body{
-font-family:Arial;
+font-family:'Inter',sans-serif;
 background:#0c0f14;
 color:white;
 text-align:center;
-padding-top:50px;
+padding-top:40px;
 }
 
-h1{color:#ff7a00;}
+/* WHEEL */
+#wheel-container{
+position:relative;
+width:320px;
+height:320px;
+margin:40px auto;
+}
 
 #wheel{
-margin:40px auto;
-width:300px;
-height:300px;
+width:100%;
+height:100%;
 border-radius:50%;
 border:8px solid #ff7a00;
-position:relative;
-overflow:hidden;
 transition: transform 4s ease-out;
 }
 
-.segment{
+/* POINTER */
+#pointer{
+width:0;
+height:0;
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-bottom:25px solid #ff7a00;
 position:absolute;
-width:50%;
-height:50%;
-background:#151a22;
-transform-origin:100% 100%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
+top:-10px;
+left:50%;
+transform:translateX(-50%);
 }
 
-.segment:nth-child(1){transform:rotate(0deg) skewY(-60deg);}
-.segment:nth-child(2){transform:rotate(120deg) skewY(-60deg);}
-.segment:nth-child(3){transform:rotate(240deg) skewY(-60deg);}
+/* CENTER LOGO */
+#center-logo{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#0c0f14;
+border-radius:50%;
+padding:10px 15px;
+font-size:12px;
+border:2px solid #ff7a00;
+}
 
+/* BUTTON */
 button{
 padding:12px 20px;
 background:#ff7a00;
@@ -52,6 +66,7 @@ border-radius:6px;
 cursor:pointer;
 }
 
+/* RESULT */
 #result{
 margin-top:20px;
 font-size:20px;
@@ -63,12 +78,16 @@ color:#ff7a00;
 <body>
 
 <h1>🎡 Spin & Win</h1>
-<p>Win ₹100 / ₹200 / ₹300 OFF</p>
+<p>Win exciting discounts on your next adventure</p>
 
-<div id="wheel">
-<div class="segment">₹100</div>
-<div class="segment">₹200</div>
-<div class="segment">₹300</div>
+<div id="wheel-container">
+
+<div id="pointer"></div>
+
+<canvas id="wheel" width="320" height="320"></canvas>
+
+<div id="center-logo">Adventure<br>Saathi</div>
+
 </div>
 
 <button onclick="spin()">Spin Now</button>
@@ -77,30 +96,89 @@ color:#ff7a00;
 
 <script>
 
-let spinning = false;
+const options = [
+"₹100",
+"₹200",
+"₹300",
+"₹400",
+"₹500",
+"₹1000",
+"Better Luck Next Time"
+];
+
+const colors = [
+"#ff7a00",
+"#ff3d00",
+"#ffb300",
+"#ff6f61",
+"#ffa726",
+"#ff5722",
+"#555"
+];
+
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+
+const arc = (2 * Math.PI) / options.length;
+
+function drawWheel(){
+for(let i=0;i<options.length;i++){
+
+ctx.beginPath();
+ctx.fillStyle = colors[i];
+ctx.moveTo(160,160);
+ctx.arc(160,160,160,arc*i,arc*(i+1));
+ctx.fill();
+
+ctx.save();
+ctx.translate(160,160);
+ctx.rotate(arc*i + arc/2);
+ctx.fillStyle="white";
+ctx.font="14px Arial";
+ctx.fillText(options[i],80,5);
+ctx.restore();
+
+}
+}
+
+drawWheel();
+
+let spinning=false;
+let currentRotation=0;
 
 function spin(){
+
 if(spinning) return;
 
-spinning = true;
+spinning=true;
 
-const wheel = document.getElementById("wheel");
+// weighted outcomes
+const weighted = [
+"₹100","₹100",
+"₹200","₹200",
+"₹300",
+"₹400",
+"₹500",
+"₹1000",
+"Better Luck Next Time","Better Luck Next Time"
+];
 
-// weighted probability
-const outcomes = [100,100,100,200,200,300];
-const result = outcomes[Math.floor(Math.random()*outcomes.length)];
+const result = weighted[Math.floor(Math.random()*weighted.length)];
 
-let rotation = 360 * 5; // spins
+const index = options.indexOf(result);
 
-if(result === 100) rotation += 60;
-if(result === 200) rotation += 180;
-if(result === 300) rotation += 300;
+// rotation logic
+const spinDeg = 360*5 + (360 - index * (360/options.length));
 
-wheel.style.transform = `rotate(${rotation}deg)`;
+currentRotation += spinDeg;
+
+document.getElementById("wheel").style.transform =
+`rotate(${currentRotation}deg)`;
 
 setTimeout(()=>{
+
 document.getElementById("result").innerHTML = `
-🎉 You won ₹${result} OFF!
+🎉 Result: ${result}
 
 <br><br>
 👉 To claim:
@@ -108,8 +186,10 @@ document.getElementById("result").innerHTML = `
 <br>2. Share screenshot
 <br>3. Get your voucher
 `;
-spinning = false;
-}, 4000);
+
+spinning=false;
+
+},4000);
 
 }
 
