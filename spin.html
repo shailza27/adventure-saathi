@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spin & Win | Adventure Saathi</title>
+
+<style>
+body{
+font-family:Arial;
+background:#0c0f14;
+color:white;
+text-align:center;
+padding-top:100px;
+}
+
+button{
+padding:15px 25px;
+background:#ff7a00;
+border:none;
+color:white;
+font-size:18px;
+cursor:pointer;
+border-radius:6px;
+}
+
+#wheelResult{
+margin-top:30px;
+font-size:24px;
+color:#ff7a00;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎡 Spin & Win</h1>
+<p>Win ₹100 / ₹200 / ₹300 OFF on your Kedarnath trip</p>
+
+<button onclick="spinWheel()">Spin Now</button>
+
+<div id="wheelResult"></div>
+
+<script>
+
+function spinWheel(){
+
+const rewards = [100, 200, 300];
+
+// control probability (more 100s, less 300s)
+const weighted = [100,100,100,200,200,300];
+
+const result = weighted[Math.floor(Math.random()*weighted.length)];
+
+document.getElementById("wheelResult").innerHTML =
+`🎉 You won ₹${result} OFF!
+
+<br><br>
+👉 To claim:
+<br>1. Follow @adventuresaathi on Instagram
+<br>2. Share screenshot on WhatsApp
+<br>3. Get your voucher
+`;
+
+}
+
+</script>
+
+</body>
+</html>
