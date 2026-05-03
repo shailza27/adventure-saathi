@@ -69,9 +69,9 @@ filter:brightness(0.4);
 #pointer{
 width:0;
 height:0;
-border-left:18px solid transparent;
-border-right:18px solid transparent;
-border-bottom:30px solid #ff7a00;
+border-left:28px solid transparent;
+border-right:28px solid transparent;
+border-bottom:34px solid #ff7a00;
 position:absolute;
 top:-15px;
 left:50%;
@@ -337,7 +337,7 @@ const index=options.indexOf(result);
 const segmentAngle=360/options.length;
 const targetAngle=(index*segmentAngle)+(segmentAngle/2);
 
-const spinDeg=(360*5)+(360-targetAngle);
+const spinDeg=(360*5)+(270-targetAngle);
 rotation+=spinDeg;
 
 document.getElementById("wheel").style.transform=`rotate(${rotation}deg)`;
