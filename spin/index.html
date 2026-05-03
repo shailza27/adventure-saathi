@@ -64,13 +64,31 @@ color:white;
 font-size:16px;
 border-radius:6px;
 cursor:pointer;
+margin:5px;
 }
 
 /* RESULT */
 #result{
 margin-top:20px;
-font-size:20px;
+font-size:18px;
 color:#ff7a00;
+}
+
+/* CONFETTI */
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+background:red;
+top:-10px;
+animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(100vh) rotate(720deg);
+opacity:0;
+}
 }
 </style>
 </head>
@@ -78,42 +96,37 @@ color:#ff7a00;
 <body>
 
 <h1>🎡 Spin & Win</h1>
-<p>Win exciting discounts on your next adventure</p>
+<p>Win discounts on your next adventure</p>
 
 <div id="wheel-container">
-
 <div id="pointer"></div>
-
 <canvas id="wheel" width="320" height="320"></canvas>
-
 <div id="center-logo">Adventure<br>Saathi</div>
-
 </div>
 
 <button onclick="spin()">Spin Now</button>
 
 <div id="result"></div>
 
+<!-- ACTION BUTTONS -->
+<div id="actions" style="display:none;">
+<a href="https://instagram.com/adventuresaathi" target="_blank">
+<button>📸 Follow on Instagram</button>
+</a>
+
+<a id="whatsappBtn" target="_blank">
+<button>📲 Claim on WhatsApp</button>
+</a>
+</div>
+
 <script>
 
 const options = [
-"₹100",
-"₹200",
-"₹300",
-"₹400",
-"₹500",
-"₹1000",
-"Better Luck Next Time"
+"₹100","₹200","₹300","₹400","₹500","₹1000","Better Luck Next Time"
 ];
 
 const colors = [
-"#ff7a00",
-"#ff3d00",
-"#ffb300",
-"#ff6f61",
-"#ffa726",
-"#ff5722",
-"#555"
+"#ff7a00","#ff3d00","#ffb300","#ff6f61","#ffa726","#ff5722","#555"
 ];
 
 const canvas = document.getElementById("wheel");
@@ -148,11 +161,15 @@ let currentRotation=0;
 
 function spin(){
 
-if(spinning) return;
+if(localStorage.getItem("spun")){
+alert("You already used your spin!");
+return;
+}
 
+if(spinning) return;
 spinning=true;
 
-// weighted outcomes
+// weighted results
 const weighted = [
 "₹100","₹100",
 "₹200","₹200",
@@ -164,12 +181,9 @@ const weighted = [
 ];
 
 const result = weighted[Math.floor(Math.random()*weighted.length)];
-
 const index = options.indexOf(result);
 
-// rotation logic
 const spinDeg = 360*5 + (360 - index * (360/options.length));
-
 currentRotation += spinDeg;
 
 document.getElementById("wheel").style.transform =
@@ -177,20 +191,49 @@ document.getElementById("wheel").style.transform =
 
 setTimeout(()=>{
 
+localStorage.setItem("spun", "true");
+
+let coupon = "";
+if(result.includes("₹")){
+coupon = "AS" + result.replace("₹","");
+}
+
 document.getElementById("result").innerHTML = `
 🎉 Result: ${result}
-
 <br><br>
-👉 To claim:
-<br>1. Follow @adventuresaathi
-<br>2. Share screenshot
-<br>3. Get your voucher
+🎟️ Coupon: <b>${coupon || "N/A"}</b>
 `;
+
+if(result !== "Better Luck Next Time"){
+launchConfetti();
+}
+
+document.getElementById("actions").style.display="block";
+
+// WhatsApp message
+const msg = encodeURIComponent(
+`Hi Adventure Saathi! I just won ${result} (Coupon: ${coupon}) from Spin Wheel 🎡`
+);
+
+document.getElementById("whatsappBtn").href =
+`https://wa.me/918808970991?text=${msg}`;
 
 spinning=false;
 
 },4000);
 
+}
+
+function launchConfetti(){
+for(let i=0;i<50;i++){
+const div = document.createElement("div");
+div.className="confetti";
+div.style.left=Math.random()*100+"vw";
+div.style.background=`hsl(${Math.random()*360},100%,50%)`;
+document.body.appendChild(div);
+
+setTimeout(()=>div.remove(),3000);
+}
 }
 
 </script>
