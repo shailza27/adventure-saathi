@@ -2,261 +2,346 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spin & Win | Adventure Saathi</title>
 
 <style>
+
 body{
+margin:0;
 font-family:'Inter',sans-serif;
-background:#0c0f14;
+background:linear-gradient(135deg,#0c0f14,#1a1f2b);
 color:white;
-text-align:center;
-padding-top:40px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
 /* WHEEL */
 #wheel-container{
 position:relative;
-width:320px;
-height:320px;
-margin:40px auto;
+width:90vw;
+max-width:420px;
+height:90vw;
+max-height:420px;
 }
 
 #wheel{
 width:100%;
 height:100%;
 border-radius:50%;
-border:8px solid #ff7a00;
+border:10px solid #ff7a00;
+box-shadow:0 0 25px rgba(255,122,0,0.5);
 transition: transform 4s ease-out;
+}
+
+#wheel.dimmed{
+filter:brightness(0.4);
 }
 
 /* POINTER */
 #pointer{
 width:0;
 height:0;
-border-left:15px solid transparent;
-border-right:15px solid transparent;
-border-bottom:25px solid #ff7a00;
+border-left:18px solid transparent;
+border-right:18px solid transparent;
+border-bottom:30px solid #ff7a00;
 position:absolute;
-top:-10px;
+top:-15px;
 left:50%;
 transform:translateX(-50%);
+filter:drop-shadow(0 0 8px #ff7a00);
 }
 
-/* CENTER LOGO */
-#center-logo{
+/* CENTER IMAGE */
+#center-img{
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-background:white;
+width:90px;
+height:90px;
 border-radius:50%;
-width:80px;
-height:80px;
-display:flex;
-align-items:center;
-justify-content:center;
-border:3px solid #ff7a00;
 overflow:hidden;
+border:4px solid #fff;
 }
 
-#center-logo img{
+#center-img img{
 width:100%;
 height:100%;
-object-fit:contain;
+object-fit:cover;
 }
 
 /* BUTTON */
 button{
-padding:12px 20px;
-background:#ff7a00;
+padding:14px 24px;
+margin-top:20px;
+background:linear-gradient(45deg,#ff7a00,#ffb347);
 border:none;
 color:white;
 font-size:16px;
-border-radius:6px;
+border-radius:30px;
 cursor:pointer;
-margin:5px;
+font-weight:600;
+box-shadow:0 4px 15px rgba(255,122,0,0.4);
 }
 
-/* RESULT */
-#result{
-margin-top:20px;
-font-size:18px;
+/* POPUP */
+#popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.75);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.popup-content{
+background:#11151c;
+padding:30px;
+border-radius:15px;
+text-align:center;
+width:85%;
+max-width:350px;
+}
+
+.popup-content h2{
+font-size:32px;
 color:#ff7a00;
 }
+
+.coupon{
+font-size:22px;
+color:#00e676;
+font-weight:bold;
+margin:10px 0;
+}
+
+/* BUTTONS */
+.action-btn{
+display:block;
+width:100%;
+margin-top:10px;
+padding:12px;
+border:none;
+border-radius:25px;
+font-size:15px;
+cursor:pointer;
+}
+
+.insta{background:#E1306C;color:white;}
+.whatsapp{background:#25D366;color:white;}
 
 /* CONFETTI */
 .confetti{
 position:fixed;
-width:10px;
-height:10px;
-top:-10px;
-animation:fall 3s linear forwards;
+width:8px;
+height:8px;
+top:50%;
+left:50%;
+opacity:1;
+animation:burst 1s ease-out forwards;
 }
 
-@keyframes fall{
+@keyframes burst{
 to{
-transform:translateY(100vh) rotate(720deg);
+transform:translate(var(--x), var(--y)) rotate(720deg);
 opacity:0;
 }
 }
+
 </style>
 </head>
 
 <body>
 
-<h1>🎡 Spin & Win</h1>
-<p>Win exciting discounts on your next adventure</p>
+<h2>🎡 Spin & Win</h2>
 
 <div id="wheel-container">
-
 <div id="pointer"></div>
+<canvas id="wheel" width="400" height="400"></canvas>
 
-<canvas id="wheel" width="320" height="320"></canvas>
-
-<div id="center-logo">
-<img src="logo.png" alt="Adventure Saathi">
+<div id="center-img">
+<img src="logo2.png">
 </div>
-
 </div>
 
 <button onclick="spin()">Spin Now</button>
 
-<div id="result"></div>
+<!-- POPUP -->
+<div id="popup">
+<div class="popup-content">
 
-<div id="actions" style="display:none;">
+<h2 id="resultText"></h2>
+<p class="coupon" id="couponCode"></p>
 
-<a href="https://instagram.com/adventuresaathi" target="_blank">
-<button>📸 Follow on Instagram</button>
-</a>
+<button class="action-btn insta"
+onclick="window.open('https://instagram.com/adventuresaathi')">
+📸 Follow on Instagram
+</button>
 
-<a id="whatsappBtn" target="_blank">
-<button>📲 Claim on WhatsApp</button>
-</a>
+<button id="waBtn" class="action-btn whatsapp">
+📲 Claim on WhatsApp
+</button>
 
+</div>
 </div>
 
 <script>
 
-const options = [
-"₹100","₹200","₹300","₹400","₹500","₹1000","Better Luck"
-];
-
-const colors = [
-"#ff7a00",
-"#ff9933",
-"#ffffff",
-"#138808",
-"#1b5e20",
-"#ff5722",
-"#444"
-];
+const options = ["₹100","₹200","₹300","₹400","Better Luck"];
+const colors = ["#ff7a00","#ff9933","#ffb347","#ff5722","#444"];
 
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
 
 const arc = (2 * Math.PI) / options.length;
 
-function drawWheel(){
+/* DRAW WHEEL */
+function drawWheel(highlightIndex=-1, flash=false){
+
+ctx.clearRect(0,0,400,400);
+
 for(let i=0;i<options.length;i++){
 
 ctx.beginPath();
-ctx.fillStyle = colors[i];
-ctx.moveTo(160,160);
-ctx.arc(160,160,160,arc*i,arc*(i+1));
+
+if(i===highlightIndex && flash){
+ctx.fillStyle="#00e676";
+}else{
+ctx.fillStyle=colors[i];
+}
+
+ctx.moveTo(200,200);
+ctx.arc(200,200,200,arc*i,arc*(i+1));
 ctx.fill();
 
 ctx.save();
-ctx.translate(160,160);
+ctx.translate(200,200);
 ctx.rotate(arc*i + arc/2);
 
-ctx.fillStyle = (colors[i] === "#ffffff") ? "black" : "white";
-ctx.font="14px Arial";
-ctx.fillText(options[i],80,5);
+ctx.fillStyle="white";
+ctx.font="bold 16px Arial";
+ctx.fillText(options[i],100,10);
 
 ctx.restore();
-
 }
 }
 
 drawWheel();
 
 let spinning=false;
-let currentRotation=0;
+let rotation=0;
 
+/* COUPON */
+function generateCode(amount){
+const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+let r="";
+for(let i=0;i<4;i++){
+r+=chars[Math.floor(Math.random()*chars.length)];
+}
+return "AS"+amount.replace("₹","")+"-"+r;
+}
+
+/* BURST CONFETTI */
+function burst(){
+for(let i=0;i<60;i++){
+const div=document.createElement("div");
+div.className="confetti";
+div.style.background=`hsl(${Math.random()*360},100%,50%)`;
+
+const x=(Math.random()-0.5)*600+"px";
+const y=(Math.random()-0.5)*600+"px";
+
+div.style.setProperty('--x',x);
+div.style.setProperty('--y',y);
+
+document.body.appendChild(div);
+
+setTimeout(()=>div.remove(),1000);
+}
+}
+
+/* FLASH WINNER */
+function flashWinningSegment(index){
+let count=0;
+const interval=setInterval(()=>{
+drawWheel(index,count%2===0);
+count++;
+if(count>6){
+clearInterval(interval);
+drawWheel(index,true);
+}
+},300);
+}
+
+/* SPIN */
 function spin(){
 
-if(localStorage.getItem("spun")){
-alert("You already used your spin!");
+if(localStorage.getItem("coupon")){
+alert("You already have a coupon: "+localStorage.getItem("coupon"));
 return;
 }
 
 if(spinning) return;
 spinning=true;
 
-// weighted logic
-const weighted = [
+const weighted=[
 "₹100","₹100",
 "₹200","₹200",
 "₹300",
 "₹400",
-"₹500",
-"₹1000",
 "Better Luck","Better Luck"
 ];
 
-const result = weighted[Math.floor(Math.random()*weighted.length)];
-const index = options.indexOf(result);
+const result=weighted[Math.floor(Math.random()*weighted.length)];
+const index=options.indexOf(result);
 
-const spinDeg = 360*5 + (360 - index * (360/options.length));
-currentRotation += spinDeg;
+const segmentAngle=360/options.length;
+const targetAngle=(index*segmentAngle)+(segmentAngle/2);
+const spinDeg=(360*5)+(360-targetAngle);
 
-document.getElementById("wheel").style.transform =
-`rotate(${currentRotation}deg)`;
+rotation+=spinDeg;
+
+document.getElementById("wheel").style.transform=
+`rotate(${rotation}deg)`;
 
 setTimeout(()=>{
 
-localStorage.setItem("spun","true");
+document.getElementById("wheel").classList.add("dimmed");
 
-let coupon = "";
+flashWinningSegment(index);
+
+let coupon="";
 if(result.includes("₹")){
-coupon = "AS" + result.replace("₹","");
+coupon=generateCode(result);
+localStorage.setItem("coupon",coupon);
+burst();
 }
 
-document.getElementById("result").innerHTML = `
-🎉 Result: ${result}
-<br><br>
-🎟️ Coupon: <b>${coupon || "N/A"}</b>
-`;
+document.getElementById("resultText").innerText=result;
+document.getElementById("couponCode").innerText=coupon;
 
-if(result !== "Better Luck"){
-launchConfetti();
-}
+document.getElementById("popup").style.display="flex";
 
-document.getElementById("actions").style.display="block";
-
-// WhatsApp message
-const msg = encodeURIComponent(
-`Hi Adventure Saathi! I won ${result} (Coupon: ${coupon}) 🎡`
+// WhatsApp
+const msg=encodeURIComponent(
+`Hi! I won ${result} 🎡 Coupon: ${coupon}`
 );
 
-document.getElementById("whatsappBtn").href =
-`https://wa.me/918808970991?text=${msg}`;
+document.getElementById("waBtn").onclick=()=>{
+window.open(`https://wa.me/918808970991?text=${msg}`);
+};
 
 spinning=false;
 
 },4000);
 
-}
-
-function launchConfetti(){
-for(let i=0;i<50;i++){
-const div=document.createElement("div");
-div.className="confetti";
-div.style.left=Math.random()*100+"vw";
-div.style.background=`hsl(${Math.random()*360},100%,50%)`;
-document.body.appendChild(div);
-setTimeout(()=>div.remove(),3000);
-}
 }
 
 </script>
